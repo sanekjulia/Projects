@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output
 
 # wizualizacja jednego rozwiązania z trasą
-def vizualize(cities_list):
+def vizualize(cities_list, nr_gen):
     x_coords = [city.x for city in cities_list]
     y_coords = [city.y for city in cities_list]
     labels = [city.id for city in cities_list]
@@ -20,7 +20,7 @@ def vizualize(cities_list):
     plt.ylim(0, 310)
     plt.xlabel('X')
     plt.ylabel('Y')
-    plt.title('Aktualna trasa')
+    plt.title(f'Aktualna trasa – Pokolenie nr: {nr_gen}', fontsize=12)
     plt.grid(True)
     plt.gca().set_aspect('equal', adjustable='box')
 
@@ -49,13 +49,12 @@ def generate_cities(number_of_cities):
     return cities_list
 
 # Funkcja celu obliczana dla pojedynczego rozwiązania - chromosomu
-def fitness_function(chromosom): 
+def fitness_function(chromosom):
     length_sum = 0
-    for i in range(len(chromosom)): #dla kazdego miasta w chromosomie
-        dx = chromosom[i-1].x - chromosom[i].x
-        dy = chromosom[i-1].y - chromosom[i].y
-        odl = math.sqrt(dx**2 + dy**2)
-        length_sum += odl
+    for a, b in zip(chromosom, chromosom[1:] + [chromosom[0]]):  # trasa zamknięta
+        dx = a.x - b.x
+        dy = a.y - b.y
+        length_sum += math.sqrt(dx**2 + dy**2)
     return length_sum
 
 
